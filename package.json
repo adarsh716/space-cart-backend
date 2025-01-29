@@ -24,6 +24,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "razorpay": "^2.9.5",
     "stripe": "^12.4.0"
   }
 }

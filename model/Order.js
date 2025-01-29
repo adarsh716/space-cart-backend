@@ -17,6 +17,7 @@ const orderSchema = new Schema(
     cvc:{type:String},
     paymentStatus: { type: String, default: 'pending' },
     status: { type: String, default: 'pending' },
+    paymentId: { type: String }, 
     selectedAddress: { type: Schema.Types.Mixed, required: true },
   },
   { timestamps: true }
