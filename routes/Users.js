@@ -1,8 +1,8 @@
 const express = require('express');
-const { fetchUserById, updateUser,writeReview } = require('../controller/User');
+const { fetchUserById, updateUser,countUsers} = require('../controller/User');
 
 const router = express.Router();
 router.get('/own', fetchUserById)
+      .get('/countuser',countUsers)
       .patch('/:id', updateUser)
-      //.post('/review/:productId', writeReview)
 exports.router = router;

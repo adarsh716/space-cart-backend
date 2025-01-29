@@ -84,4 +84,21 @@ exports.fetchOrdersByUser = async (req, res) => {
       res.status(400).json(err);
     }
   };
+
+  exports.countOrders = async (req, res) => {
+    try {
+      
+      const userOrders = await Order.countDocuments();
+      res.status(200).json({
+        success: true,
+        userOrders,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: 'Server Error',
+      });
+    }
+  };
   

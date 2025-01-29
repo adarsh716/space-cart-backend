@@ -89,10 +89,47 @@ exports.updateProduct = async (req, res) => {
     const product = await Product.findByIdAndUpdate(id, req.body, {new:true});
     product.discountPrice = Math.round(product.price*(1-product.discountPercentage/100))
     const updatedProduct = await product.save()
-    res.status(200).json(updatedProduct);
+    res.status(200).json(updatedProduct); 
   } catch (err) {
     res.status(400).json(err);
   }
 };
 
+exports.countProuducts = async (req, res) => {
+  try {
+    // Use the Mongoose countDocuments method to count the users
+    const productCount = await Product.countDocuments();
+    console.log(productCount);
+    res.status(200).json({
+      success: true,
+      productCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
+
+
+
+exports.fetchAllProductsDashboard = async (req, res) => {
+  try {
+
+    const products = await Product.find();
+
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
 
