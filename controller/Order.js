@@ -2,8 +2,8 @@ const { Order } = require("../model/Order");
 const { Product } = require("../model/Product");
 const { User } = require("../model/User");
 const { sendMail, invoiceTemplate } = require("../services/common");
-const { Cart } = require('../model/Cart');
-const mongoose=require("mongoose");
+const { Cart } = require("../model/Cart");
+const mongoose = require("mongoose");
 
 const Razorpay = require("razorpay");
 const razorpayInstance = new Razorpay({
@@ -14,7 +14,7 @@ const razorpayInstance = new Razorpay({
 exports.fetchOrdersByUser = async (req, res) => {
   const { id } = req.user;
   try {
-    const orders = await Order.find({ user: id });
+    const orders = await Order.find({ user: id }).sort({ createdAt: -1 });
 
     res.status(200).json(orders);
   } catch (err) {
@@ -23,11 +23,9 @@ exports.fetchOrdersByUser = async (req, res) => {
 };
 
 exports.createOrder = async (req, res) => {
-
   const { totalAmount } = req.body;
 
   try {
-
     const paymentOrder = await razorpayInstance.orders.create({
       amount: totalAmount * 100,
       currency: "INR",
@@ -35,7 +33,7 @@ exports.createOrder = async (req, res) => {
       payment_capture: 1,
     });
 
-    res.status(201).json({  paymentOrder, id: paymentOrder?.id });
+    res.status(201).json({ paymentOrder, id: paymentOrder?.id });
   } catch (err) {
     console.error("Error creating order:", err);
     res.status(400).json(err);
@@ -44,8 +42,8 @@ exports.createOrder = async (req, res) => {
 
 exports.capturePayment = async (req, res) => {
   console.log(req.body);
-  
-  const { id,order } = req.body;  
+
+  const { id, order } = req.body;
   const orderResponse = new Order(order);
   try {
     for (let item of order.items) {
@@ -57,7 +55,7 @@ exports.capturePayment = async (req, res) => {
     orderResponse.paymentId = id;
 
     const doc = await orderResponse.save();
-    
+
     const doc1 = await Cart.deleteMany({
       user: new mongoose.Types.ObjectId(order.user),
     });
@@ -70,7 +68,7 @@ exports.capturePayment = async (req, res) => {
       subject: "Order Received",
     });
 
-    res.status(201).json({ order: doc,  success:true });
+    res.status(201).json({ order: doc, success: true });
   } catch (err) {
     console.error("Error creating order:", err);
     res.status(400).json(err);
